@@ -47,7 +47,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftps
           # Thư mục gốc dự án trên host, tính từ thư mục mà tài khoản FTP đăng nhập vào
-          server-dir: /pos/
+          server-dir: /
           exclude: |
             **/.git/**
             **/.github/**
