@@ -157,21 +157,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sb-flyout {
     position: fixed; z-index: 50;
     min-width: 200px; padding: 6px;
-    background: var(--c-navy);
+    background: var(--c-surface);
+    border: 1px solid var(--c-line); border-left: 0;
     border-radius: 0 12px 12px 0;
-    box-shadow: 10px 8px 28px rgba(15, 42, 71, .28);
+    box-shadow: 10px 8px 28px rgba(15, 42, 71, .14);
     display: flex; flex-direction: column; gap: 2px;
 }
 .sb-flyout-title {
     padding: 8px 12px 6px; font-size: 12px; font-weight: 800; letter-spacing: .04em;
-    text-transform: uppercase; color: rgba(255, 255, 255, .5);
+    text-transform: uppercase; color: var(--c-muted);
 }
 .sb-flyout-item {
     display: flex; align-items: center; height: 38px; padding: 0 12px;
-    border-radius: 8px; color: rgba(255, 255, 255, .78); white-space: nowrap;
+    border-radius: 8px; color: var(--c-muted); white-space: nowrap;
     transition: background .15s, color .15s;
 }
-.sb-flyout-item:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.sb-flyout-item:hover { background: var(--c-bg); color: var(--c-text); }
 .sb-flyout-item.router-link-active { background: var(--c-primary); color: var(--c-on-primary); font-weight: 700; }
 .flyout-enter-active, .flyout-leave-active { transition: opacity .14s, transform .14s var(--ease); }
 .flyout-enter-from, .flyout-leave-to { opacity: 0; transform: translateX(-6px); }
@@ -246,6 +247,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
     .btn-primary { padding: 0 12px; }
     .net { display: none; }
     .content { padding: 18px 14px 32px; }
+}
+
+/* Điện thoại hẹp (<= 480px): thu gọn header để không tràn ngang */
+@media (max-width: 480px) {
+    .search { min-width: 0; }
+    .header-right { gap: 8px; }
+    .header-right .icon-btn[aria-label="Toàn màn hình"] { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
