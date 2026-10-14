@@ -1,5 +1,4 @@
 <script setup>
-<<<<<<< HEAD
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { ChevronDown, ChevronRight } from 'lucide-vue-next';
@@ -16,24 +15,10 @@ const route = useRoute();
 const { laDiDong } = useDiDong();
 const subId = `sb-sub-${props.item.key}`;
 
-=======
-import { computed, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { ChevronDown } from 'lucide-vue-next';
-
-// Một mục menu chính có menu phụ. Bấm để mở/đóng, mũi tên xoay theo trạng thái.
-const props = defineProps({ item: { type: Object, required: true } });
-
-const route = useRoute();
-const subId = `sb-sub-${props.item.key}`;
-
-// Mục chính được tô nổi khi đang ở một trang con của nó
->>>>>>> cfa7866d84281c11476defc1cf8e1f4804991acc
 const dangChon = computed(() =>
     props.item.children.some((c) => route.path === c.to || route.path.startsWith(c.to + '/')),
 );
 
-<<<<<<< HEAD
 const mo = ref(dangChon.value && laDiDong.value); // accordion (điện thoại)
 const nổi = ref(false);                            // bảng nổi (máy tính)
 const nut = ref(null);
@@ -133,36 +118,12 @@ watch(() => store.expanded, (v, cu) => { if (v !== cu && nổi.value) nextTick(t
 
         <!-- Điện thoại: xổ xuống -->
         <div v-if="laDiDong" :id="subId" class="sb-sub-wrap">
-=======
-const mo = ref(dangChon.value);
-watch(dangChon, (v) => { if (v) mo.value = true; });
-</script>
-
-<template>
-    <div class="sb-group" :class="{ open: mo }">
-        <button
-            type="button"
-            class="sb-item sb-parent"
-            :class="{ 'router-link-active': dangChon }"
-            :title="item.label"
-            :aria-expanded="mo"
-            :aria-controls="subId"
-            @click="mo = !mo"
-        >
-            <component :is="item.icon" :size="20" class="sb-icon" />
-            <span class="sb-label sb-fade">{{ item.label }}</span>
-            <ChevronDown :size="16" class="sb-chevron sb-fade" aria-hidden="true" />
-        </button>
-
-        <div :id="subId" class="sb-sub-wrap">
->>>>>>> cfa7866d84281c11476defc1cf8e1f4804991acc
             <div class="sb-sub">
                 <RouterLink v-for="c in item.children" :key="c.to" :to="c.to" class="sb-sub-item">
                     {{ c.label }}
                 </RouterLink>
             </div>
         </div>
-<<<<<<< HEAD
 
         <!-- Máy tính: bảng nổi -->
         <Teleport v-else to="body">
@@ -184,7 +145,5 @@ watch(dangChon, (v) => { if (v) mo.value = true; });
                 </nav>
             </Transition>
         </Teleport>
-=======
->>>>>>> cfa7866d84281c11476defc1cf8e1f4804991acc
     </div>
 </template>
