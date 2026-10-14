@@ -1,7 +1,10 @@
 :root {
+    /* Màu chủ đạo: giá trị mặc định (cam). Cài đặt giao diện ghi đè các biến này lúc chạy. */
     --c-primary: #ff9f43;
-    --c-primary-soft: #fff1e0;
-    --c-primary-ink: #c2640a;
+    --c-primary-soft: #fff3e8;
+    --c-primary-ink: #b36f2f;
+    --c-on-primary: #ffffff;
+
     --c-navy: #0f2a47;
     --c-bg: #f5f6f8;
     --c-surface: #ffffff;
@@ -10,6 +13,8 @@
     --c-muted: #6b7280;
     --c-ok: #1b9e77;
     --c-off: #d64545;
+
+    --fs-base: 15px;
     --sb-w: 76px;
     --sb-w-open: 248px;
     --header-h: 64px;
@@ -23,12 +28,16 @@ body {
     background: var(--c-bg);
     color: var(--c-text);
     font-family: "Nunito", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
-    font-size: 15px;
+    font-size: var(--fs-base);
     line-height: 1.5;
 }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
+.sr-only {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 
 /* ---------- Khung ---------- */
 .shell { min-height: 100%; }
@@ -71,12 +80,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sb-logo {
     width: 40px; height: 40px; flex-shrink: 0;
     display: grid; place-items: center;
-    background: var(--c-primary); color: #fff;
+    background: var(--c-primary); color: var(--c-on-primary);
     border-radius: 12px;
+    overflow: hidden;
 }
-.sb-name { font-weight: 800; font-size: 17px; white-space: nowrap; color: var(--c-navy); }
+.sb-logo.is-image { background: transparent; }
+.sb-logo img { width: 100%; height: 100%; object-fit: contain; }
+.sb-name {
+    min-width: 0; font-weight: 800; font-size: 16px; color: var(--c-navy);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .sb-pin {
-    margin-left: auto;
+    margin-left: auto; flex-shrink: 0;
     width: 34px; height: 34px;
     display: grid; place-items: center;
     border: 1px solid var(--c-line); border-radius: 10px;
@@ -85,7 +100,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .sb-pin:hover { color: var(--c-primary-ink); border-color: var(--c-primary); }
 .sb-pin.on { background: var(--c-primary-soft); color: var(--c-primary-ink); border-color: var(--c-primary); }
 
-.sb-nav { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+/* Menu: cuộn dọc khi quá dài, nhưng không bao giờ hiện thanh cuộn (nhất là thanh ngang khi thu nhỏ) */
+.sb-nav {
+    flex: 1; min-height: 0;
+    padding: 14px 16px; display: flex; flex-direction: column; gap: 4px;
+    overflow-x: hidden; overflow-y: auto;
+    scrollbar-width: none;
+}
+.sb-nav::-webkit-scrollbar { display: none; }
+
 .sb-item {
     display: flex; align-items: center; gap: 14px;
     height: 44px; padding: 0 12px;
@@ -95,8 +118,63 @@ button { font: inherit; color: inherit; cursor: pointer; }
     transition: background .15s, color .15s;
 }
 .sb-item:hover { background: var(--c-bg); color: var(--c-text); }
-.sb-item.router-link-active { background: var(--c-primary-soft); color: var(--c-primary-ink); font-weight: 700; }
+.sb-sub-item {
+    display: flex; align-items: center;
+    height: 38px; padding: 0 12px 0 46px; /* 46px = lề + icon + khoảng cách, để chữ thẳng hàng với mục chính */
+    border-radius: 10px;
+    color: var(--c-muted);
+    white-space: nowrap;
+    transition: background .15s, color .15s;
+}
+.sb-sub-item:hover { background: var(--c-bg); color: var(--c-text); }
+
+/* Mục chính đang mở bảng nổi: nền xám như khi rê chuột */
+.sb-parent.is-open { background: var(--c-bg); color: var(--c-text); }
+
+/* Mục đang chọn: dùng chung cho menu chính và menu phụ.
+   Đặt sau quy tắc :hover để rê chuột lên mục đang chọn không làm mất nền cam. */
+.sb-item.router-link-active,
+.sb-sub-item.router-link-active { background: var(--c-primary-soft); color: var(--c-primary-ink); font-weight: 700; }
 .sb-icon { flex-shrink: 0; }
+
+/* Mục chính có menu phụ */
+.sb-parent { width: 100%; border: 0; background: transparent; text-align: left; }
+.sb-chevron { margin-left: auto; flex-shrink: 0; transition: transform .2s var(--ease), opacity .15s; }
+.sb-group.open .sb-chevron { transform: rotate(180deg); }
+
+.sb-sub-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .2s var(--ease); }
+.sb-group.open .sb-sub-wrap { grid-template-rows: 1fr; }
+.sb-sub {
+    min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 2px;
+    visibility: hidden; transition: visibility 0s .2s; /* đóng xong mới ẩn: không còn Tab vào được */
+}
+.sb-group.open .sb-sub { padding-top: 2px; visibility: visible; transition-delay: 0s; }
+/* Menu phụ chỉ hiện khi sidebar đang mở (rê chuột, ghim, hoặc ngăn kéo trên điện thoại) */
+.sidebar:not(.expanded):not(.mobile-open) .sb-sub-wrap { display: none; }
+
+/* Bảng menu phụ nổi (máy tính) */
+.sb-group.flyout .sb-chevron { transform: none; }
+.sb-flyout {
+    position: fixed; z-index: 50;
+    min-width: 200px; padding: 6px;
+    background: var(--c-navy);
+    border-radius: 0 12px 12px 0;
+    box-shadow: 10px 8px 28px rgba(15, 42, 71, .28);
+    display: flex; flex-direction: column; gap: 2px;
+}
+.sb-flyout-title {
+    padding: 8px 12px 6px; font-size: 12px; font-weight: 800; letter-spacing: .04em;
+    text-transform: uppercase; color: rgba(255, 255, 255, .5);
+}
+.sb-flyout-item {
+    display: flex; align-items: center; height: 38px; padding: 0 12px;
+    border-radius: 8px; color: rgba(255, 255, 255, .78); white-space: nowrap;
+    transition: background .15s, color .15s;
+}
+.sb-flyout-item:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+.sb-flyout-item.router-link-active { background: var(--c-primary); color: var(--c-on-primary); font-weight: 700; }
+.flyout-enter-active, .flyout-leave-active { transition: opacity .14s, transform .14s var(--ease); }
+.flyout-enter-from, .flyout-leave-to { opacity: 0; transform: translateX(-6px); }
 
 /* Chữ chỉ hiện khi sidebar mở */
 .sb-fade { opacity: 0; pointer-events: none; transition: opacity .15s; }
@@ -128,9 +206,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn-primary {
     display: inline-flex; align-items: center; gap: 8px;
     height: 40px; padding: 0 16px; border-radius: 10px;
-    background: var(--c-primary); color: #fff; font-weight: 700;
+    background: var(--c-primary); color: var(--c-on-primary); font-weight: 700; white-space: nowrap;
 }
 .btn-primary:hover { filter: brightness(.95); }
+.btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 38px; padding: 0 14px; border-radius: 10px;
+    border: 1px solid var(--c-line); background: var(--c-surface); color: var(--c-text); font-weight: 600;
+}
+.btn-ghost:hover { background: var(--c-bg); }
 .avatar {
     width: 38px; height: 38px; display: grid; place-items: center;
     border-radius: 50%; background: var(--c-navy); color: #fff; font-size: 13px; font-weight: 700;

@@ -1,28 +1,25 @@
 <script setup>
-import { onBeforeUnmount } from 'vue';
-import { PanelLeftClose, PanelLeftOpen, Store } from 'lucide-vue-next';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next';
 import { useGiaoDienStore } from '../stores/giaoDien';
+import { useThemeStore } from '../stores/theme';
 import { menuItems } from '@/core/registry';
+import LogoCuaHang from './LogoCuaHang.vue';
+import SidebarGroup from './SidebarGroup.vue';
 
 const store = useGiaoDienStore();
-let timer = null;
-
-// Trễ nhẹ khi rời chuột để sidebar không nhấp nháy.
-function vao() { clearTimeout(timer); store.setHover(true); }
-function ra() { clearTimeout(timer); timer = setTimeout(() => store.setHover(false), 150); }
-onBeforeUnmount(() => clearTimeout(timer));
+const theme = useThemeStore();
 </script>
 
 <template>
     <aside
         class="sidebar"
         :class="{ expanded: store.expanded, 'mobile-open': store.mobileOpen }"
-        @mouseenter="vao"
-        @mouseleave="ra"
+        @mouseenter="store.vaoSidebar()"
+        @mouseleave="store.raSidebar()"
     >
         <div class="sb-brand">
-            <span class="sb-logo"><Store :size="22" /></span>
-            <span class="sb-name sb-fade">POS Cửa hàng</span>
+            <LogoCuaHang />
+            <span class="sb-name sb-fade" :title="theme.storeName">{{ theme.storeName || 'POS' }}</span>
             <button
                 class="sb-pin sb-fade"
                 :class="{ on: store.pinned }"
@@ -36,10 +33,13 @@ onBeforeUnmount(() => clearTimeout(timer));
         </div>
 
         <nav class="sb-nav" aria-label="Menu chính">
-            <RouterLink v-for="m in menuItems" :key="m.key" :to="m.to" class="sb-item" :title="m.label">
-                <component :is="m.icon" :size="20" class="sb-icon" />
-                <span class="sb-label sb-fade">{{ m.label }}</span>
-            </RouterLink>
+            <template v-for="m in menuItems" :key="m.key">
+                <SidebarGroup v-if="m.children" :item="m" />
+                <RouterLink v-else :to="m.to" class="sb-item" :title="m.label">
+                    <component :is="m.icon" :size="20" class="sb-icon" />
+                    <span class="sb-label sb-fade">{{ m.label }}</span>
+                </RouterLink>
+            </template>
         </nav>
     </aside>
 </template>
