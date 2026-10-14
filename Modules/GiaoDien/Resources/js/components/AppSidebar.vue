@@ -1,4 +1,8 @@
 <script setup>
+<<<<<<< HEAD
+=======
+import { onBeforeUnmount } from 'vue';
+>>>>>>> cfa7866d84281c11476defc1cf8e1f4804991acc
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next';
 import { useGiaoDienStore } from '../stores/giaoDien';
 import { useThemeStore } from '../stores/theme';
@@ -8,6 +12,15 @@ import SidebarGroup from './SidebarGroup.vue';
 
 const store = useGiaoDienStore();
 const theme = useThemeStore();
+<<<<<<< HEAD
+=======
+let timer = null;
+
+// Trễ nhẹ khi rời chuột để sidebar không nhấp nháy.
+function vao() { clearTimeout(timer); store.setHover(true); }
+function ra() { clearTimeout(timer); timer = setTimeout(() => store.setHover(false), 150); }
+onBeforeUnmount(() => clearTimeout(timer));
+>>>>>>> cfa7866d84281c11476defc1cf8e1f4804991acc
 </script>
 
 <template>

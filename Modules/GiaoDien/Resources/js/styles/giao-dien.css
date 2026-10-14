@@ -128,9 +128,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .sb-sub-item:hover { background: var(--c-bg); color: var(--c-text); }
 
+<<<<<<< HEAD
 /* Mục chính đang mở bảng nổi: nền xám như khi rê chuột */
 .sb-parent.is-open { background: var(--c-bg); color: var(--c-text); }
 
+=======
+>>>>>>> cfa7866d84281c11476defc1cf8e1f4804991acc
 /* Mục đang chọn: dùng chung cho menu chính và menu phụ.
    Đặt sau quy tắc :hover để rê chuột lên mục đang chọn không làm mất nền cam. */
 .sb-item.router-link-active,
@@ -152,6 +155,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Menu phụ chỉ hiện khi sidebar đang mở (rê chuột, ghim, hoặc ngăn kéo trên điện thoại) */
 .sidebar:not(.expanded):not(.mobile-open) .sb-sub-wrap { display: none; }
 
+<<<<<<< HEAD
 /* Bảng menu phụ nổi (máy tính) */
 .sb-group.flyout .sb-chevron { transform: none; }
 .sb-flyout {
@@ -176,6 +180,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .flyout-enter-active, .flyout-leave-active { transition: opacity .14s, transform .14s var(--ease); }
 .flyout-enter-from, .flyout-leave-to { opacity: 0; transform: translateX(-6px); }
 
+=======
+>>>>>>> cfa7866d84281c11476defc1cf8e1f4804991acc
 /* Chữ chỉ hiện khi sidebar mở */
 .sb-fade { opacity: 0; pointer-events: none; transition: opacity .15s; }
 .sidebar.expanded .sb-fade { opacity: 1; pointer-events: auto; transition-delay: .08s; }
