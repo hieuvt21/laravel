@@ -87,6 +87,9 @@ export function taoKho(ten) {
             await chay(ten, 'readwrite', (s) => s.put(ban_ghi), (m) => m.set(ban_ghi.id, ban_ghi));
             return sao(ban_ghi);
         },
+        // Ghi nguyên bản ghi từ server (không đổi id/dấu thời gian, không đưa vào hàng đợi gửi lên)
+        ghiThang: (doc) => chay(ten, 'readwrite', (s) => s.put(sao(doc)), (m) => m.set(doc.id, sao(doc))).then(() => undefined),
+        xoaHet: () => chay(ten, 'readwrite', (s) => s.clear(), (m) => m.clear()).then(() => undefined),
         xoa: (id) => chay(ten, 'readwrite', (s) => s.delete(id), (m) => m.delete(id)).then(() => undefined),
     };
 }

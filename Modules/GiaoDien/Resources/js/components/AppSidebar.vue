@@ -2,12 +2,16 @@
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next';
 import { useGiaoDienStore } from '../stores/giaoDien';
 import { useThemeStore } from '../stores/theme';
-import { menuItems } from '@/core/registry';
+import { computed } from 'vue';
+import { menuChoQuyen } from '@/core/registry';
+import { useXacThuc } from '@modules/XacThuc/Resources/js/stores/xacThuc';
 import LogoCuaHang from './LogoCuaHang.vue';
 import SidebarGroup from './SidebarGroup.vue';
 
 const store = useGiaoDienStore();
 const theme = useThemeStore();
+const auth = useXacThuc();
+const menuItems = computed(() => menuChoQuyen(auth.coQuyen));
 </script>
 
 <template>

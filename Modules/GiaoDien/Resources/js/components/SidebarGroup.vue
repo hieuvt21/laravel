@@ -1,3 +1,12 @@
+<script>
+// Loại thiết bị trỏ gần nhất (mouse / touch / pen), dùng chung cho mọi mục. Cảm ứng sinh thêm các sự kiện chuột "giả"
+// (mouseenter/leave) ngay sau khi chạm; nếu để chúng đóng bảng thì bảng biến mất trước khi cú chạm kịp bấm vào mục.
+let loaiCon = 'mouse';
+if (typeof document !== 'undefined') {
+    ['pointerdown', 'pointermove'].forEach((t) => document.addEventListener(t, (e) => { loaiCon = e.pointerType; }, true));
+}
+</script>
+
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -25,7 +34,6 @@ const nut = ref(null);
 const bang = ref(null);
 const viTri = ref({ top: 0, left: 0 });
 let timerDong = null;
-let loaiCon = 'mouse';
 
 watch(dangChon, (v) => { if (v && laDiDong.value) mo.value = true; });
 
@@ -65,8 +73,8 @@ function bamNut(e) {
 }
 function vaoNut(e) { if (!laDiDong.value && e.pointerType === 'mouse') { store.vaoSidebar(); moBang(); } }
 function raNut(e) { if (!laDiDong.value && e.pointerType === 'mouse') hen(); }
-function vaoBang() { clearTimeout(timerDong); store.vaoSidebar(); }
-function raBang() { store.raSidebar(); hen(); }
+function vaoBang() { if (loaiCon !== 'mouse') return; clearTimeout(timerDong); store.vaoSidebar(); }
+function raBang() { if (loaiCon !== 'mouse') return; store.raSidebar(); hen(); }
 
 function ngoai(e) {
     if (!nổi.value) return;
@@ -105,7 +113,6 @@ watch(() => store.expanded, (v, cu) => { if (v !== cu && nổi.value) nextTick(t
             :aria-expanded="laDiDong ? mo : nổi"
             :aria-haspopup="laDiDong ? undefined : 'true'"
             :aria-controls="subId"
-            @pointerdown="loaiCon = $event.pointerType"
             @click="bamNut"
             @pointerenter="vaoNut"
             @pointerleave="raNut"

@@ -2,7 +2,7 @@ import { ShoppingCart } from 'lucide-vue-next';
 
 export default {
     name: 'ban-hang',
-    menu: { label: 'Bán hàng', icon: ShoppingCart, to: '/ban-hang', order: 1 },
+    menu: { label: 'Bán hàng', icon: ShoppingCart, to: '/ban-hang', quyen: 'ban-hang.xem', order: 1 },
     permissions: {
         label: 'Bán hàng',
         items: [
@@ -15,6 +15,6 @@ export default {
         ],
     },
     routes: [
-        { path: '/ban-hang', component: () => import('./pages/Index.vue'), meta: { title: 'Bán hàng' } },
+        { path: '/ban-hang', component: () => import('./pages/Index.vue'), meta: { title: 'Bán hàng', quyen: 'ban-hang.xem' } },
     ],
 };

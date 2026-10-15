@@ -2,7 +2,7 @@ import { Wrench } from 'lucide-vue-next';
 
 export default {
     name: 'dich-vu',
-    menu: { label: 'Dịch vụ', icon: Wrench, to: '/dich-vu', order: 3 },
+    menu: { label: 'Dịch vụ', icon: Wrench, to: '/dich-vu', quyen: 'dich-vu.xem', order: 3 },
     permissions: {
         label: 'Dịch vụ',
         items: [
@@ -12,6 +12,6 @@ export default {
         ],
     },
     routes: [
-        { path: '/dich-vu', component: () => import('./pages/Index.vue'), meta: { title: 'Dịch vụ' } },
+        { path: '/dich-vu', component: () => import('./pages/Index.vue'), meta: { title: 'Dịch vụ', quyen: 'dich-vu.xem' } },
     ],
 };

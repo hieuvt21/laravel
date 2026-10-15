@@ -1,18 +1,10 @@
 import { defineStore } from 'pinia';
-import { taoKho } from '@/core/kho/kho';
+import { taoKhoDongBo } from '@/core/kho/khoDongBo';
+import { khiThayDoi } from '@/core/dongBo';
 import { tatCaQuyen } from '@/core/registry';
 
-const kho = taoKho('chuc_vu');
+const kho = taoKhoDongBo('chuc_vu'); // chức vụ mặc định do server tạo sẵn
 export const ID_QUAN_TRI = 'quan-tri';
-
-// Chức vụ mặc định, tạo một lần khi chưa có dữ liệu. Quản trị viên luôn có mọi quyền (kể cả quyền thêm sau này).
-const MAC_DINH = [
-    { id: ID_QUAN_TRI, ten: 'Quản trị viên', khoa: true, quyen: [] },
-    { id: 'quan-ly', ten: 'Quản lý', quyen: tatCaQuyen.filter((k) => !['cai-dat.phan-quyen', 'nhan-vien.xem-luong'].includes(k)) },
-    { id: 'ban-hang', ten: 'Bán hàng', quyen: ['ban-hang.xem', 'ban-hang.tao-don', 'ban-hang.giam-gia', 'ban-hang.xem-lich-su', 'san-pham.xem', 'dich-vu.xem', 'khach-hang.xem', 'khach-hang.them-sua', 'khach-hang.xem-lich-su'] },
-    { id: 'phuc-vu', ten: 'Phục vụ', quyen: ['ban-hang.xem', 'ban-hang.tao-don', 'san-pham.xem', 'dich-vu.xem'] },
-    { id: 'thu-kho', ten: 'Thủ kho', quyen: ['san-pham.xem', 'san-pham.them-sua', 'san-pham.dieu-chinh-kho'] },
-];
 
 const sapXep = (ds) => ds.sort((a, b) => (b.khoa ? 1 : 0) - (a.khoa ? 1 : 0) || a.ten.localeCompare(b.ten, 'vi'));
 
@@ -31,10 +23,9 @@ export const useChucVuStore = defineStore('chucVu', {
         async tai() {
             if (this.daTai) return;
             try {
-                let ds = await kho.tatCa();
-                if (!ds.length) ds = await Promise.all(MAC_DINH.map((c) => kho.luu(c)));
-                this.ds = sapXep(ds);
+                this.ds = sapXep(await kho.tatCa());
                 this.daTai = true;
+                khiThayDoi('chuc_vu', async () => { this.ds = sapXep(await kho.tatCa()); }); // dữ liệu mới từ server
             } catch (e) {
                 this.loi = 'Không đọc được dữ liệu chức vụ trên thiết bị này.';
                 console.error(e);

@@ -6,7 +6,10 @@ export const modules = Object.values(files)
     .map((m) => m.default)
     .filter(Boolean);
 
-export const moduleRoutes = modules.flatMap((m) => m.routes ?? []);
+const tatCaRoutes = modules.flatMap((m) => m.routes ?? []);
+// Route có meta.trong = trang riêng, không nằm trong khung sidebar/header (đăng nhập, cổng khách hàng...)
+export const routesRieng = tatCaRoutes.filter((r) => r.meta?.trong);
+export const moduleRoutes = tatCaRoutes.filter((r) => !r.meta?.trong);
 
 export const menuItems = modules
     .filter((m) => m.menu)
@@ -26,3 +29,15 @@ export const nhomQuyen = modules
     .sort((a, b) => a.order - b.order);
 
 export const tatCaQuyen = nhomQuyen.flatMap((g) => g.items.map((i) => i.key));
+
+// Menu mà người dùng được thấy: mục (hoặc mục phụ) có `quyen` thì cần có quyền đó; không khai báo quyen = ai cũng thấy.
+export function menuChoQuyen(coQuyen) {
+    return menuItems
+        .map((m) => {
+            if (!m.children) return coQuyen(m.quyen) ? m : null;
+            const c = m.children.filter((x) => coQuyen(x.quyen));
+            return c.length ? { ...m, children: c } : null;
+        })
+        .filter(Boolean);
+}
+export const trangDauTien = (ds) => ds[0]?.children?.[0]?.to ?? ds[0]?.to ?? null;

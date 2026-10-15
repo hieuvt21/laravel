@@ -8,8 +8,8 @@ export default {
         icon: Settings,
         order: 6,
         children: [
-            { label: 'Cài đặt giao diện', to: '/cai-dat/giao-dien' },
-            { label: 'Phân quyền', to: '/cai-dat/phan-quyen' },
+            { label: 'Cài đặt giao diện', to: '/cai-dat/giao-dien', quyen: 'cai-dat.giao-dien' },
+            { label: 'Phân quyền', to: '/cai-dat/phan-quyen', quyen: 'cai-dat.phan-quyen' },
         ],
     },
     permissions: {
@@ -24,12 +24,12 @@ export default {
         {
             path: '/cai-dat/giao-dien',
             component: () => import('./pages/GiaoDien.vue'),
-            meta: { title: 'Cài đặt giao diện' },
+            meta: { title: 'Cài đặt giao diện', quyen: 'cai-dat.giao-dien' },
         },
         {
             path: '/cai-dat/phan-quyen',
             component: () => import('./pages/PhanQuyen.vue'),
-            meta: { title: 'Phân quyền' },
+            meta: { title: 'Phân quyền', quyen: 'cai-dat.phan-quyen' },
         },
     ],
 };

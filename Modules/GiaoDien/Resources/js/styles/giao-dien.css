@@ -224,6 +224,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .net i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .net.ok { color: var(--c-ok); }
 .net.off { color: var(--c-off); }
+.net.wait { color: #b7791f; }
 .only-mobile { display: none; }
 
 /* ---------- Nội dung trang ---------- */

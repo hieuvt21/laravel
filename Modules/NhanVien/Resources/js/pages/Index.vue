@@ -5,9 +5,14 @@ import HopThoai from '@/core/ui/HopThoai.vue';
 import FormNhanVien from '../components/FormNhanVien.vue';
 import { useNhanVienStore } from '../stores/nhanVien';
 import { useChucVuStore } from '../stores/chucVu';
+import { useXacThuc } from '@modules/XacThuc/Resources/js/stores/xacThuc';
 
 const store = useNhanVienStore();
 const chucVu = useChucVuStore();
+const auth = useXacThuc();
+const duocSua = computed(() => auth.coQuyen('nhan-vien.them-sua'));
+const duocXoa = computed(() => auth.coQuyen('nhan-vien.xoa'));
+const xemLuong = computed(() => auth.coQuyen('nhan-vien.xem-luong'));
 
 const tim = ref('');
 const loc = ref('');
@@ -29,8 +34,8 @@ const tien = (v) => (v ? v.toLocaleString('vi-VN') + ' đ' : '—');
 const tenChucVu = (id) => chucVu.theoId(id)?.ten ?? 'Chưa có chức vụ';
 const chuCai = (ten) => ten.trim().split(/\s+/).slice(-2).map((w) => w[0]).join('').toUpperCase();
 
-async function luu(data) {
-    await store.luu(data);
+async function luu(data, tk) {
+    await store.luuVoiTaiKhoan(data, tk);
     dangSua.value = null;
 }
 async function xoa() {
@@ -61,7 +66,7 @@ async function xoa() {
                 <option value="">Tất cả chức vụ</option>
                 <option v-for="c in chucVu.ds" :key="c.id" :value="c.id">{{ c.ten }}</option>
             </select>
-            <button type="button" class="btn-primary them" @click="dangSua = {}"><Plus :size="18" /> Thêm nhân viên</button>
+            <button v-if="duocSua" type="button" class="btn-primary them" @click="dangSua = {}"><Plus :size="18" /> Thêm nhân viên</button>
         </div>
 
         <p v-if="store.loi" class="loi-trang" role="alert">{{ store.loi }}</p>
@@ -71,13 +76,13 @@ async function xoa() {
             <div v-else-if="!store.ds.length" class="rong">
                 <UserCog :size="32" aria-hidden="true" />
                 <p>Chưa có nhân viên nào.</p>
-                <button type="button" class="btn-primary" @click="dangSua = {}"><Plus :size="18" /> Thêm nhân viên đầu tiên</button>
+                <button v-if="duocSua" type="button" class="btn-primary" @click="dangSua = {}"><Plus :size="18" /> Thêm nhân viên đầu tiên</button>
             </div>
             <div v-else-if="!danhSach.length" class="rong">Không tìm thấy nhân viên phù hợp.</div>
             <table v-else class="bang">
                 <thead>
                     <tr>
-                        <th>Nhân viên</th><th>Số điện thoại</th><th>Chức vụ</th><th class="so">Lương cơ bản</th><th class="thao"><span class="sr-only">Thao tác</span></th>
+                        <th>Nhân viên</th><th>Số điện thoại</th><th>Chức vụ</th><th v-if="xemLuong" class="so">Lương cơ bản</th><th class="thao"><span class="sr-only">Thao tác</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,10 +98,10 @@ async function xoa() {
                         </td>
                         <td>{{ n.sdt || '—' }}</td>
                         <td><span class="nhan" :class="{ mat: !chucVu.theoId(n.chucVuId) }">{{ tenChucVu(n.chucVuId) }}</span></td>
-                        <td class="so">{{ tien(n.luongCoBan) }}</td>
+                        <td v-if="xemLuong" class="so">{{ tien(n.luongCoBan) }}</td>
                         <td class="thao">
-                            <button type="button" class="icon-btn" :aria-label="'Sửa ' + n.ten" title="Sửa" @click="dangSua = n"><Pencil :size="16" /></button>
-                            <button type="button" class="icon-btn xoa" :aria-label="'Xóa ' + n.ten" title="Xóa" @click="dangXoa = n; loiXoa = ''"><Trash2 :size="16" /></button>
+                            <button v-if="duocSua" type="button" class="icon-btn" :aria-label="'Sửa ' + n.ten" title="Sửa" @click="dangSua = n"><Pencil :size="16" /></button>
+                            <button v-if="duocXoa" type="button" class="icon-btn xoa" :aria-label="'Xóa ' + n.ten" title="Xóa" @click="dangXoa = n; loiXoa = ''"><Trash2 :size="16" /></button>
                         </td>
                     </tr>
                 </tbody>

@@ -2,7 +2,7 @@ import { UserCog } from 'lucide-vue-next';
 
 export default {
     name: 'nhan-vien',
-    menu: { label: 'Nhân viên', icon: UserCog, to: '/nhan-vien', order: 5 },
+    menu: { label: 'Nhân viên', icon: UserCog, to: '/nhan-vien', quyen: 'nhan-vien.xem', order: 5 },
     permissions: {
         label: 'Nhân viên',
         items: [
@@ -13,6 +13,6 @@ export default {
         ],
     },
     routes: [
-        { path: '/nhan-vien', component: () => import('./pages/Index.vue'), meta: { title: 'Nhân viên' } },
+        { path: '/nhan-vien', component: () => import('./pages/Index.vue'), meta: { title: 'Nhân viên', quyen: 'nhan-vien.xem' } },
     ],
 };
