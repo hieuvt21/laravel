@@ -14,7 +14,7 @@ return new class extends Migration
             $t->string('ma_hash', 64)->unique(); // SHA-256 của token, không lưu token gốc
             $t->string('thiet_bi', 100)->nullable();
             $t->timestamp('dung_lan_cuoi')->nullable();
-            $t->timestamp('het_han');
+            $t->timestamp('het_han')->nullable()->index();
             $t->timestamps();
         });
     }
