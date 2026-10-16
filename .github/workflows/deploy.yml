@@ -56,3 +56,16 @@ jobs:
             .env
             .env.*
             public/hot
+
+      # Tự chạy migrate trên host sau khi upload xong.
+      # Cần: secret DEPLOY_TOKEN + APP_URL trên GitHub, và DEPLOY_TOKEN (cùng giá trị) trong .env trên host.
+      # Chưa khai báo DEPLOY_TOKEN thì bước này tự bỏ qua.
+      - name: Chạy migrate trên host
+        env:
+          DT: ${{ secrets.DEPLOY_TOKEN }}
+          APP_URL: ${{ secrets.APP_URL }}
+        if: ${{ env.DT != '' && env.APP_URL != '' }}
+        run: |
+          sleep 5
+          curl -fsS --retry 3 --retry-delay 5 -X POST "${APP_URL%/}/api/he-thong/cap-nhat" \
+            -H "X-Deploy-Token: $DT" -H "Accept: application/json"
